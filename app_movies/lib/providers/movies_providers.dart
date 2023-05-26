@@ -9,11 +9,11 @@ class MoviesProvider extends ChangeNotifier {
   final String _language ='en-US';
   List <Movie> onDisplayMovies = [];
   List <Movie>  popularMovies = [];
+  Map<int ,List<Cast>> movieCast = {};
+
   int _popularPage = 0;
   
   MoviesProvider(){
-    print('start');
-
     getOnDisplayMovies();
     getPopularMovies();
 
@@ -46,6 +46,14 @@ class MoviesProvider extends ChangeNotifier {
     final  popularMoviesData = PopularsResponse.fromJson(decodedData);
     popularMovies = [...popularMovies, ...popularMoviesData.results];
     notifyListeners();
+  }
+
+ Future<List<Cast>> getMovieCast(int movieID) async{
+    _popularPage ++;
+    final decodedData = await _getJsonData('3/movie/$movieID/credits'); 
+    final  castDataResponse = CreditsReesponse.fromJson(decodedData);
+    movieCast[movieID] = castDataResponse.cast;
+    return castDataResponse.cast;
   }
 }
 
